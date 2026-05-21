@@ -29,3 +29,9 @@ variable "yc_token" {
   description = "Yandex Cloud IAM token"
   sensitive   = true
 }
+
+variable "service_account_key_file" {
+  type        = string
+  description = "Path to Yandex Cloud service account key JSON file"
+  sensitive   = true
+}
