@@ -1,19 +1,17 @@
-output "vm_name" {
-  description = "VM name"
-  value       = yandex_compute_instance.platform.name
-}
+output "vms_info" {
+  description = "Information about created virtual machines"
 
-output "vm_external_ip" {
-  description = "VM external IP address"
-  value       = yandex_compute_instance.platform.network_interface[0].nat_ip_address
-}
+  value = {
+    web = {
+      instance_name = yandex_compute_instance.platform.name
+      external_ip   = yandex_compute_instance.platform.network_interface[0].nat_ip_address
+      fqdn          = yandex_compute_instance.platform.fqdn
+    }
 
-output "vm_internal_ip" {
-  description = "VM internal IP address"
-  value       = yandex_compute_instance.platform.network_interface[0].ip_address
-}
-
-output "ssh_command" {
-  description = "SSH connection command"
-  value       = "ssh ubuntu@${yandex_compute_instance.platform.network_interface[0].nat_ip_address}"
+    db = {
+      instance_name = yandex_compute_instance.platform_db.name
+      external_ip   = yandex_compute_instance.platform_db.network_interface[0].nat_ip_address
+      fqdn          = yandex_compute_instance.platform_db.fqdn
+    }
+  }
 }
