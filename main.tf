@@ -14,30 +14,28 @@ resource "yandex_compute_instance" "platform" {
   zone        = var.zone
 
   resources {
-    cores         = var.vm_web_cores
-    memory        = var.vm_web_memory
-    core_fraction = var.vm_web_core_fraction
+    cores         = var.vms_resources["web"].cores
+    memory        = var.vms_resources["web"].memory
+    core_fraction = var.vms_resources["web"].core_fraction
   }
 
   boot_disk {
     initialize_params {
       image_id = data.yandex_compute_image.ubuntu_web.image_id
-      size     = var.vm_web_disk_size
-      type     = var.vm_web_disk_type
+      size     = var.vms_resources["web"].hdd_size
+      type     = var.vms_resources["web"].hdd_type
     }
   }
 
   network_interface {
     subnet_id = var.existing_subnet_id
-    nat       = var.vm_web_nat
+    nat       = var.vms_resources["web"].nat
   }
 
-  metadata = {
-    ssh-keys = "${var.vm_web_ssh_user}:${var.vms_ssh_public_root_key}"
-  }
+  metadata = var.metadata
 
   scheduling_policy {
-    preemptible = var.vm_web_preemptible
+    preemptible = var.vms_resources["web"].preemptible
   }
 }
 
@@ -49,29 +47,27 @@ resource "yandex_compute_instance" "platform_db" {
   zone        = var.zone
 
   resources {
-    cores         = var.vm_db_cores
-    memory        = var.vm_db_memory
-    core_fraction = var.vm_db_core_fraction
+    cores         = var.vms_resources["db"].cores
+    memory        = var.vms_resources["db"].memory
+    core_fraction = var.vms_resources["db"].core_fraction
   }
 
   boot_disk {
     initialize_params {
       image_id = data.yandex_compute_image.ubuntu_db.image_id
-      size     = var.vm_db_disk_size
-      type     = var.vm_db_disk_type
+      size     = var.vms_resources["db"].hdd_size
+      type     = var.vms_resources["db"].hdd_type
     }
   }
 
   network_interface {
     subnet_id = var.existing_subnet_id
-    nat       = var.vm_db_nat
+    nat       = var.vms_resources["db"].nat
   }
 
-  metadata = {
-    ssh-keys = "${var.vm_db_ssh_user}:${var.vms_ssh_public_root_key}"
-  }
+  metadata = var.metadata
 
   scheduling_policy {
-    preemptible = var.vm_db_preemptible
+    preemptible = var.vms_resources["db"].preemptible
   }
 }
