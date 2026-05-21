@@ -1,38 +1,38 @@
 data "yandex_compute_image" "ubuntu" {
-  family = "ubuntu-2204-lts"
+  family = var.vm_web_image_family
 }
 
 resource "yandex_compute_instance" "platform" {
   folder_id   = var.folder_id
-  name        = "develop"
-  hostname    = "develop"
-  platform_id = "standard-v1"
+  name        = var.vm_web_name
+  hostname    = var.vm_web_hostname
+  platform_id = var.vm_web_platform_id
   zone        = var.zone
 
   resources {
-    cores         = 2
-    memory        = 2
-    core_fraction = 5
+    cores         = var.vm_web_cores
+    memory        = var.vm_web_memory
+    core_fraction = var.vm_web_core_fraction
   }
 
   boot_disk {
     initialize_params {
       image_id = data.yandex_compute_image.ubuntu.image_id
-      size     = 10
-      type     = "network-hdd"
+      size     = var.vm_web_disk_size
+      type     = var.vm_web_disk_type
     }
   }
 
   network_interface {
     subnet_id = var.existing_subnet_id
-    nat       = true
+    nat       = var.vm_web_nat
   }
 
   metadata = {
-    ssh-keys = "ubuntu:${var.vms_ssh_public_root_key}"
+    ssh-keys = "${var.vm_web_ssh_user}:${var.vms_ssh_public_root_key}"
   }
 
   scheduling_policy {
-    preemptible = true
+    preemptible = var.vm_web_preemptible
   }
 }
